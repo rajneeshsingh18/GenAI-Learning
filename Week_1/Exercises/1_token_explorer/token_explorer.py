@@ -40,3 +40,28 @@ def get_context_info(token_count, model='gpt-4o'):
     pct = (token_count / max_t) * 100
     return {'max_tokens': max_t, 'percentage_used': round(pct, 2),
             'fits': token_count <= max_t, 'warning': pct > 80}
+
+
+def main():
+    print('\n' + '='*50)
+    print('TOKEN EXPLORER')
+    print('='*50)
+    print('Enter text, then press Ctrl+D (or Ctrl+Z on Windows)\n')
+    
+    lines = []
+    try:
+        while True:
+            lines.append(input())
+    except EOFError:
+        pass  # Ctrl+D ends input
+    
+    text = '\n'.join(lines)
+    
+    for model in ['gpt-4o', 'gpt-4o-mini']:
+        count = count_tokens(text, model)
+        cost  = calculate_cost(count, model, 'input')
+        info  = get_context_info(count, model)
+        print(f'  {model}: {count:,} tokens | ${cost:.6f} | {info["percentage_used"]}% of context')
+
+if __name__ == '__main__':
+    main()
